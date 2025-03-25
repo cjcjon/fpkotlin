@@ -39,10 +39,9 @@ sealed class List<out A> {
         /* 연습문제 3-3 */
         fun <A> drop(list: List<A>, n: Int): List<A> = when (list) {
             is Nil -> Nil
-            is Cons -> Cons(
-                list.head,
-                if (n > 1) drop(list.tail, n - 1) else Nil
-            )
+            is Cons ->
+                if (n > 0) drop(list.tail, n - 1)
+                else list
         }
     }
 }
