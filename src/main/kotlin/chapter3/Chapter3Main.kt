@@ -43,6 +43,14 @@ sealed class List<out A> {
                 if (n > 0) drop(list.tail, n - 1)
                 else list
         }
+
+        /* 연습문제 3-4 */
+        fun <A> dropWhile(list: List<A>, f: (A) -> Boolean): List<A> = when (list) {
+            is Nil -> Nil
+            is Cons ->
+                if (f(list.head)) dropWhile(list.tail, f)
+                else list
+        }
     }
 }
 
