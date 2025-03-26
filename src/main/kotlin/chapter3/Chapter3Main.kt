@@ -100,6 +100,10 @@ sealed class List<out A> {
 
         fun <A> length(xs: List<A>): Int =
             foldLeft(xs, 0) { acc, _ -> acc + 1 }
+
+        /* 연습문제 3-11 */
+        fun <A> reverse(xs: List<A>): List<A> =
+            foldLeft(xs, Nil as List<A>) { acc, x -> Cons(x, acc) }
     }
 }
 
