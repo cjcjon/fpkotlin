@@ -81,8 +81,9 @@ sealed class List<out A> {
             }
         }
 
-        /* 연습문제 3-7 */
-
+        /* 연습문제 3-8 */
+        fun <A> length(xs: List<A>): Int =
+            foldRight(xs, 0, { _, acc -> acc + 1 })
     }
 }
 
