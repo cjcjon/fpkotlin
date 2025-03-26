@@ -26,11 +26,11 @@ sealed class List<out A> {
                     else doubles.head * product(doubles.tail)
             }
 
-        fun <A> append(a1: List<A>, a2: List<A>): List<A> =
-            when (a1) {
-                is Nil -> a2
-                is Cons -> Cons(a1.head, append(a1.tail, a2))
-            }
+//        fun <A> append(a1: List<A>, a2: List<A>): List<A> =
+//            when (a1) {
+//                is Nil -> a2
+//                is Cons -> Cons(a1.head, append(a1.tail, a2))
+//            }
 
         fun <A, B> foldRight(xs: List<A>, z: B, f: (A, B) -> B): B =
             when (xs) {
@@ -111,6 +111,10 @@ sealed class List<out A> {
 
         fun <A, B> foldLeftByFoldRight(xs: List<A>, z: B, f: (B, A) -> B): B =
             foldRight(xs = xs, z = { b: B -> b }, f = { a, g -> { b -> g(f(b, a)) } })(z)
+
+        /* 연습문제 3-13 */
+        fun <A> append(a1: List<A>, a2: List<A>): List<A> =
+            foldLeft(reverse(a1), a2) { b, a -> Cons(a, b) }
     }
 }
 
