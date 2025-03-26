@@ -5,6 +5,8 @@ sealed class List<out A> {
     data class Cons<out A>(val head: A, val tail: List<A>): List<A>()
 
     companion object {
+        fun <A> empty(): List<A> = Nil
+
         fun <A> of(vararg args: A): List<A> {
             val tail = args.sliceArray(1 until args.size)
             return if (args.isEmpty()) Nil else Cons(args[0], of(*tail))
@@ -78,6 +80,9 @@ sealed class List<out A> {
                 is Nil -> Nil
             }
         }
+
+        /* 연습문제 3-7 */
+
     }
 }
 
