@@ -30,6 +30,18 @@ sealed class List<out A> {
                 is Cons -> Cons(a1.head, append(a1.tail, a2))
             }
 
+        fun <A, B> foldRight(xs: List<A>, z: B, f: (A, B) -> B): B =
+            when (xs) {
+                is Nil -> z
+                is Cons -> f(xs.head, foldRight(xs.tail, z, f))
+            }
+
+        fun sum2(ints: List<Int>): Int =
+            foldRight(ints, 0) { a, b -> a + b }
+
+        fun product2(dbs: List<Double>): Double =
+            foldRight(dbs, 1.0) { a, b -> a * b }
+
         /* 연습문제 3-1 */
         fun <A> tail(xs: List<A>): List<A> = when (xs) {
             is Nil -> Nil
