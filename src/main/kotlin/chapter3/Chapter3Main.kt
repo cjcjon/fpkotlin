@@ -104,6 +104,13 @@ sealed class List<out A> {
         /* 연습문제 3-11 */
         fun <A> reverse(xs: List<A>): List<A> =
             foldLeft(xs, Nil as List<A>) { acc, x -> Cons(x, acc) }
+
+        /* 연습문제 3-12 */
+        fun <A, B> foldRightByFoldLeft(xs: List<A>, z: B, f: (A, B) -> B): B =
+            foldLeft(reverse(xs), z) { b, a -> f(a, b) }
+
+        fun <A, B> foldLeftByFoldRight(xs: List<A>, z: B, f: (B, A) -> B): B =
+            foldRight(reverse(xs), z) { a, b -> f(b, a) }
     }
 }
 
