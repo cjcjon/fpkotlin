@@ -24,6 +24,12 @@ sealed class List<out A> {
                     else doubles.head * product(doubles.tail)
             }
 
+        fun <A> append(a1: List<A>, a2: List<A>): List<A> =
+            when (a1) {
+                is Nil -> a2
+                is Cons -> Cons(a1.head, append(a1.tail, a2))
+            }
+
         /* 연습문제 3-1 */
         fun <A> tail(xs: List<A>): List<A> = when (xs) {
             is Nil -> Nil
