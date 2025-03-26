@@ -82,14 +82,24 @@ sealed class List<out A> {
         }
 
         /* 연습문제 3-8 */
-        fun <A> length(xs: List<A>): Int =
-            foldRight(xs, 0, { _, acc -> acc + 1 })
+//        fun <A> length(xs: List<A>): Int =
+//            foldRight(xs, 0, { _, acc -> acc + 1 })
 
         /* 연습문제 3-9 */
         tailrec fun <A, B> foldLeft(xs: List<A>, z: B, f: (B, A) -> B): B = when (xs) {
             is Nil -> z
             is Cons -> foldLeft(xs.tail, f(z, xs.head), f)
         }
+
+        /* 연습문제 3-10 */
+        fun sum3(ints: List<Int>): Int =
+            foldLeft(ints, 0) { b, a -> a + b }
+
+        fun product3(dbs: List<Double>): Double =
+            foldLeft(dbs, 1.0) { b, a -> a * b }
+
+        fun <A> length(xs: List<A>): Int =
+            foldLeft(xs, 0) { acc, _ -> acc + 1 }
     }
 }
 
