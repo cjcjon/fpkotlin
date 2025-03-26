@@ -1,8 +1,8 @@
 package org.example.chapter3
 
 sealed class List<out A> {
-    data object Nil: List<Nothing>()
-    data class Cons<out A>(val head: A, val tail: List<A>): List<A>()
+    data object Nil : List<Nothing>()
+    data class Cons<out A>(val head: A, val tail: List<A>) : List<A>()
 
     companion object {
         fun <A> empty(): List<A> = Nil
@@ -107,7 +107,7 @@ sealed class List<out A> {
 
         /* 연습문제 3-12 */
         fun <A, B> foldRightByFoldLeft(xs: List<A>, z: B, f: (A, B) -> B): B =
-            foldLeft(xs = xs, z = { b: B -> b }, f = { g, a -> { b -> g(f(a, b)) }})(z)
+            foldLeft(xs = xs, z = { b: B -> b }, f = { g, a -> { b -> g(f(a, b)) } })(z)
 
         fun <A, B> foldLeftByFoldRight(xs: List<A>, z: B, f: (B, A) -> B): B =
             foldRight(xs = xs, z = { b: B -> b }, f = { a, g -> { b -> g(f(b, a)) } })(z)
@@ -115,9 +115,21 @@ sealed class List<out A> {
         /* 연습문제 3-13 */
         fun <A> append(a1: List<A>, a2: List<A>): List<A> =
             foldLeft(reverse(a1), a2) { b, a -> Cons(a, b) }
+
+        /* 연습문제 3-14 */
+        fun <A> flatten(xs: List<List<A>>): List<A> =
+            reverse(
+                foldLeft(xs, Nil as List<A>) { acc, x ->
+                    append(
+                        foldLeft(x, Nil as List<A>) { b, k -> Cons(k, b) },
+                        acc
+                    )
+                }
+            )
     }
 }
 
 fun main() {
-
+    val k1 = List.of(List.of(1, 2), List.of(3, 4))
+    println(List.flatten(k1))
 }
