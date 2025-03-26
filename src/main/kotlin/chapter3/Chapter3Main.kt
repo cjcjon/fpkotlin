@@ -57,6 +57,15 @@ sealed class List<out A> {
                 if (f(list.head)) dropWhile(list.tail, f)
                 else list
         }
+
+        /* 연습문제 3-5 */
+        fun <A> init(list: List<A>): List<A> = when (list) {
+            is Nil -> Nil
+            is Cons -> when (list.tail) {
+                is Cons -> Cons(list.head, init(list.tail))
+                is Nil -> Nil
+            }
+        }
     }
 }
 
