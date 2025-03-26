@@ -84,6 +84,12 @@ sealed class List<out A> {
         /* 연습문제 3-8 */
         fun <A> length(xs: List<A>): Int =
             foldRight(xs, 0, { _, acc -> acc + 1 })
+
+        /* 연습문제 3-9 */
+        tailrec fun <A, B> foldLeft(xs: List<A>, z: B, f: (B, A) -> B): B = when (xs) {
+            is Nil -> z
+            is Cons -> foldLeft(xs.tail, f(z, xs.head), f)
+        }
     }
 }
 
