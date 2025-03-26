@@ -107,10 +107,10 @@ sealed class List<out A> {
 
         /* 연습문제 3-12 */
         fun <A, B> foldRightByFoldLeft(xs: List<A>, z: B, f: (A, B) -> B): B =
-            foldLeft(reverse(xs), z) { b, a -> f(a, b) }
+            foldLeft(xs = xs, z = { b: B -> b }, f = { g, a -> { b -> g(f(a, b)) }})(z)
 
         fun <A, B> foldLeftByFoldRight(xs: List<A>, z: B, f: (B, A) -> B): B =
-            foldRight(reverse(xs), z) { a, b -> f(b, a) }
+            foldRight(xs = xs, z = { b: B -> b }, f = { a, g -> { b -> g(f(b, a)) } })(z)
     }
 }
 
