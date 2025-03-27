@@ -134,10 +134,20 @@ sealed class List<out A> {
         /* 연습문제 3-16 */
         fun mapDoubleToString(xs: List<Double>): List<String> =
             foldRight(xs, Nil as List<String>) { x, acc -> Cons(x.toString(), acc) }
+
+        /* 연습문제 3-17 */
+        fun <A, B> map(xs: List<A>, f: (A) -> B): List<B> {
+            tailrec fun go(xs: List<A>, acc: List<B>): List<B> = when (xs) {
+                is Nil -> acc
+                is Cons -> go(xs.tail, Cons(f(xs.head), acc))
+            }
+
+            return go(reverse(xs), Nil)
+        }
     }
 }
 
 fun main() {
-    val k = List.mapDoubleToString(List.of(1.0, 3.0, 5.0))
-    println(k)
+    val k = List.of(1, 2, 3, 4, 5)
+    println(List.map(k) { it + 1 })
 }
