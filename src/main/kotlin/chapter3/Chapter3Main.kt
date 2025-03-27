@@ -160,10 +160,22 @@ sealed class List<out A> {
         /* 연습문제 3-20 */
         fun <A> filterByFlatMap(xs: List<A>, f: (A) -> Boolean): List<A> =
             flatMap(xs) { if (f(it)) of(it) else empty()  }
+
+        /* 연습문제 3-21 */
+        fun zipAdd(xs: List<Int>, ys: List<Int>): List<Int> = when (xs) {
+            is Nil -> Nil
+            is Cons -> {
+                when (ys) {
+                    is Nil -> Nil
+                    is Cons -> Cons(xs.head + ys.head, zipAdd(xs.tail, ys.tail))
+                }
+            }
+        }
     }
 }
 
 fun main() {
-    val k = List.of(1, 2, 3, 4, 5, 6)
-    println(List.filterByFlatMap(k) { it % 2 == 0 })
+    val a = List.of(1, 2, 3)
+    val b = List.of(4, 5, 6)
+    println(List.zipAdd(a, b))
 }
