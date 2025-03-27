@@ -129,11 +129,15 @@ sealed class List<out A> {
 
         /* 연습문제 3-15 */
         fun mapAddOne(xs: List<Int>): List<Int> =
-            foldRight(xs,Nil as List<Int>) { x, acc -> Cons(x + 1, acc) }
+            foldRight(xs, Nil as List<Int>) { x, acc -> Cons(x + 1, acc) }
+
+        /* 연습문제 3-16 */
+        fun mapDoubleToString(xs: List<Double>): List<String> =
+            foldRight(xs, Nil as List<String>) { x, acc -> Cons(x.toString(), acc) }
     }
 }
 
 fun main() {
-    val k = List.mapAddOne(List.of(1, 2, 3, 4, 5))
+    val k = List.mapDoubleToString(List.of(1.0, 3.0, 5.0))
     println(k)
 }
