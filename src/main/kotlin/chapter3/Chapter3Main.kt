@@ -156,10 +156,14 @@ sealed class List<out A> {
         /* 연습문제 3-19 */
         fun <A, B> flatMap(xa: List<A>, f: (A) -> List<B>): List<B> =
             flatten(map(xa, f))
+
+        /* 연습문제 3-20 */
+        fun <A> filterByFlatMap(xs: List<A>, f: (A) -> Boolean): List<A> =
+            flatMap(xs) { if (f(it)) of(it) else empty()  }
     }
 }
 
 fun main() {
-    val k = List.of(1, 3, 5)
-    println(List.flatMap(k) { List.of(it, it * 2) })
+    val k = List.of(1, 2, 3, 4, 5, 6)
+    println(List.filterByFlatMap(k) { it % 2 == 0 })
 }
