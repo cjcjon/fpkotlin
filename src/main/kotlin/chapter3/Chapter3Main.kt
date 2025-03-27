@@ -126,10 +126,14 @@ sealed class List<out A> {
                     )
                 }
             )
+
+        /* 연습문제 3-15 */
+        fun mapAddOne(xs: List<Int>): List<Int> =
+            foldRight(xs,Nil as List<Int>) { x, acc -> Cons(x + 1, acc) }
     }
 }
 
 fun main() {
-    val k1 = List.of(List.of(1, 2), List.of(3, 4))
-    println(List.flatten(k1))
+    val k = List.mapAddOne(List.of(1, 2, 3, 4, 5))
+    println(k)
 }
