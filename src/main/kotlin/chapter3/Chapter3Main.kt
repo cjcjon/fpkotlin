@@ -144,10 +144,18 @@ sealed class List<out A> {
 
             return go(reverse(xs), Nil)
         }
+
+        /* 연습문제 3-18 */
+        fun <A> filter(xs: List<A>, f: (A) -> Boolean): List<A> = when (xs) {
+            is Nil -> Nil
+            is Cons ->
+                if (f(xs.head)) Cons(xs.head, filter(xs.tail, f))
+                else filter(xs.tail, f)
+        }
     }
 }
 
 fun main() {
-    val k = List.of(1, 2, 3, 4, 5)
-    println(List.map(k) { it + 1 })
+    val k = List.of(1, 2, 3, 4, 5, 6)
+    println(List.filter(k) { it % 2 == 0 })
 }
