@@ -152,10 +152,14 @@ sealed class List<out A> {
                 if (f(xs.head)) Cons(xs.head, filter(xs.tail, f))
                 else filter(xs.tail, f)
         }
+
+        /* 연습문제 3-19 */
+        fun <A, B> flatMap(xa: List<A>, f: (A) -> List<B>): List<B> =
+            flatten(map(xa, f))
     }
 }
 
 fun main() {
-    val k = List.of(1, 2, 3, 4, 5, 6)
-    println(List.filter(k) { it % 2 == 0 })
+    val k = List.of(1, 3, 5)
+    println(List.flatMap(k) { List.of(it, it * 2) })
 }
