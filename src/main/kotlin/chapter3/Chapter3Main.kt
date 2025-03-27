@@ -182,6 +182,27 @@ sealed class List<out A> {
                 }
             }
         }
+
+        /* 연습문제 3-23 */
+        tailrec fun <A> hasSubsequence(xs: List<A>, sub: List<A>): Boolean {
+            tailrec fun <A> go(l1: List<A>, l2: List<A>): Boolean = when (l1) {
+                is Nil -> l2 == Nil
+                is Cons ->
+                    when (l2) {
+                        is Nil -> true
+                        is Cons ->
+                            if (l1.head == l2.head) go(l1.tail, l2.tail)
+                            else false
+                    }
+            }
+
+            return when (xs) {
+                is Nil -> false
+                is Cons ->
+                    if (go(xs, sub)) true
+                    else hasSubsequence(xs.tail, sub)
+            }
+        }
     }
 }
 
