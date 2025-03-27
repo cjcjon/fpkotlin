@@ -171,6 +171,17 @@ sealed class List<out A> {
                 }
             }
         }
+
+        /* 연습문제 3-22 */
+        fun <A, B, C> zipWith(xs: List<A>, ys: List<B>, f: (A, B) -> C): List<C> = when (xs) {
+            is Nil -> Nil
+            is Cons -> {
+                when (ys) {
+                    is Nil -> Nil
+                    is Cons -> Cons(f(xs.head, ys.head), zipWith(xs.tail, ys.tail, f))
+                }
+            }
+        }
     }
 }
 
