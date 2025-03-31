@@ -235,6 +235,24 @@ sealed class Tree<out A> {
                 is Leaf -> Leaf(f(ts.value))
                 is Branch -> Branch(map(ts.left, f), map(ts.right, f))
             }
+
+        /* 연습문제 3-28 */
+        fun <A, B> fold(ta: Tree<A>, l: (A) -> B, b: (B, B) -> B): B = when (ta) {
+            is Leaf -> l(ta.value)
+            is Branch -> b(fold(ta.left, l, b), fold(ta.right, l, b))
+        }
+
+        fun <A> sizeF(ta: Tree<A>): Int =
+            fold(ta, { _ -> 1 }, { l, r -> l + r + 1 })
+
+        fun maximumF(ta: Tree<Int>): Int =
+            fold(ta, { it }, { l, r -> maxOf(l, r) })
+
+        fun <A> depthF(ta: Tree<A>): Int =
+            fold(ta, { _ -> 0 }, { l, r -> 1 + maxOf(l, r) })
+
+        fun <A, B> mapF(ta: Tree<A>, f: (A) -> B): Tree<B> =
+            fold(ta, { Leaf(f(it)) as Tree<B> }, { l, r -> Branch(l, r) })
     }
 }
 
@@ -249,5 +267,5 @@ fun main() {
         ),
         Tree.Leaf(2)
     )
-    println(Tree.map(t) { it * 2 })
+    println(Tree.mapF(t) { it * 2 })
 }
