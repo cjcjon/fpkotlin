@@ -222,10 +222,25 @@ sealed class Tree<out A> {
             is Leaf -> ts.value
             is Branch -> maxOf(maximum(ts.left), maximum(ts.right))
         }
+
+        /* 연습문제 3-26 */
+        fun depth(ts: Tree<Int>): Int = when (ts) {
+            is Leaf -> 0
+            is Branch -> 1 + maxOf(depth(ts.left), depth(ts.right))
+        }
     }
 }
 
 fun main() {
-    val t = Tree.Branch(Tree.Leaf(1), Tree.Leaf(2))
-    println(Tree.maximum(t))
+    val t = Tree.Branch(
+        Tree.Branch(
+            Tree.Leaf(1),
+            Tree.Branch(
+                Tree.Leaf(3),
+                Tree.Leaf(4),
+            ),
+        ),
+        Tree.Leaf(2)
+    )
+    println(Tree.depth(t))
 }
