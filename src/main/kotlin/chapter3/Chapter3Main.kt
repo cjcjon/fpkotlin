@@ -216,11 +216,16 @@ sealed class Tree<out A> {
             is Leaf -> 1
             is Branch -> size(ts.left) + size(ts.right) + 1
         }
-    }
 
+        /* 연습문제 3-25 */
+        fun maximum(ts: Tree<Int>): Int = when (ts) {
+            is Leaf -> ts.value
+            is Branch -> maxOf(maximum(ts.left), maximum(ts.right))
+        }
+    }
 }
 
 fun main() {
     val t = Tree.Branch(Tree.Leaf(1), Tree.Leaf(2))
-    println(Tree.size(t))
+    println(Tree.maximum(t))
 }
