@@ -209,10 +209,18 @@ sealed class List<out A> {
 sealed class Tree<out A> {
     data class Leaf<A>(val value: A): Tree<A>()
     data class Branch<A>(val left: Tree<A>, val right: Tree<A>): Tree<A>()
+
+    companion object {
+        /* 연습문제 3-24 */
+        fun <A> size(ts: Tree<A>): Int = when (ts) {
+            is Leaf -> 1
+            is Branch -> size(ts.left) + size(ts.right) + 1
+        }
+    }
+
 }
 
 fun main() {
-    val a = List.of(1, 2, 3)
-    val b = List.of(4, 5, 6)
-    println(List.zipAdd(a, b))
+    val t = Tree.Branch(Tree.Leaf(1), Tree.Leaf(2))
+    println(Tree.size(t))
 }
