@@ -228,6 +228,13 @@ sealed class Tree<out A> {
             is Leaf -> 0
             is Branch -> 1 + maxOf(depth(ts.left), depth(ts.right))
         }
+
+        /* 연습문제 3-27 */
+        fun <A, B> map(ts: Tree<A>, f: (A) -> B): Tree<B> =
+            when (ts) {
+                is Leaf -> Leaf(f(ts.value))
+                is Branch -> Branch(map(ts.left, f), map(ts.right, f))
+            }
     }
 }
 
@@ -242,5 +249,5 @@ fun main() {
         ),
         Tree.Leaf(2)
     )
-    println(Tree.depth(t))
+    println(Tree.map(t) { it * 2 })
 }
