@@ -206,6 +206,11 @@ sealed class List<out A> {
     }
 }
 
+sealed class Tree<out A> {
+    data class Leaf<A>(val value: A): Tree<A>()
+    data class Branch<A>(val left: Tree<A>, val right: Tree<A>): Tree<A>()
+}
+
 fun main() {
     val a = List.of(1, 2, 3)
     val b = List.of(4, 5, 6)
