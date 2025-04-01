@@ -1,5 +1,7 @@
 package org.example.chapter4
 
+import kotlin.math.pow
+
 sealed class Option<out A> {
     data class Some<out A>(val get: A): Option<A>()
     data object None : Option<Nothing>()
@@ -33,6 +35,19 @@ fun <A> Option<A>.filter(f: (A) -> Boolean): Option<A> = when (this) {
         else Option.None
 }
 
-fun main() {
+/* 연습문제 4-2 */
+fun mean(xs: List<Double>): Option<Double> =
+    if (xs.isEmpty()) Option.None
+    else Option.Some(xs.sum() / xs.size)
 
+fun variance(xs: List<Double>): Option<Double> =
+    mean(xs).flatMap { m ->
+        mean(xs.map { x ->
+            (x - m).pow(2)
+        })
+    }
+
+fun main() {
+    val xs = listOf(2.0, 4.0, 6.0, 8.0, 10.0)
+    println(variance(xs))
 }
