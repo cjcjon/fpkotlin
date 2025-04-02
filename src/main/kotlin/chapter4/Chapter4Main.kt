@@ -3,8 +3,19 @@ package org.example.chapter4
 import kotlin.math.pow
 
 sealed class Option<out A> {
-    data class Some<out A>(val get: A): Option<A>()
+    data class Some<out A>(val get: A) : Option<A>()
     data object None : Option<Nothing>()
+
+    companion object {
+        fun <A, B> lift(f: (A) -> B): (Option<A>) -> Option<B> =
+            { oa -> oa.map(f) }
+
+        fun <A> catches(a: () -> A): Option<A> = try {
+            Some(a())
+        } catch (e: Throwable) {
+            None
+        }
+    }
 }
 
 /* 연습문제 4-1 */
@@ -45,6 +56,12 @@ fun variance(xs: List<Double>): Option<Double> =
         mean(xs.map { x ->
             (x - m).pow(2)
         })
+    }
+
+/* 연습문제 4-3 */
+fun <A, B, C> map2(a: Option<A>, b: Option<B>, f: (A, B) -> C): Option<C> =
+    a.flatMap { aValue ->
+        b.map { bValue -> f(aValue, bValue) }
     }
 
 fun main() {
