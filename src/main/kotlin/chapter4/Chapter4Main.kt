@@ -1,5 +1,7 @@
 package org.example.chapter4
 
+import org.example.common.head
+import org.example.common.tail
 import kotlin.math.pow
 
 sealed class Option<out A> {
@@ -14,6 +16,20 @@ sealed class Option<out A> {
             Some(a())
         } catch (e: Throwable) {
             None
+        }
+
+        /* 연습문제 4-4 */
+        fun <A> sequence(xs: List<Option<A>>): Option<List<A>> {
+            tailrec fun go(xs: List<Option<A>>, acc: Option<List<A>>): Option<List<A>> =
+                if (xs.isEmpty()) acc
+                else {
+                    when (val headOpt = xs.head()) {
+                        is None -> None
+                        is Some -> go(xs.tail(), acc.map { it + listOf(headOpt.get) })
+                    }
+                }
+
+            return go(xs, Some(emptyList()))
         }
     }
 }
@@ -65,6 +81,12 @@ fun <A, B, C> map2(a: Option<A>, b: Option<B>, f: (A, B) -> C): Option<C> =
     }
 
 fun main() {
-    val xs = listOf(2.0, 4.0, 6.0, 8.0, 10.0)
-    println(variance(xs))
+    val xs = listOf(Option.Some(1), Option.Some(2), Option.Some(3))
+    println(Option.sequence(xs))
+
+    val ys = listOf(Option.Some(1), Option.None)
+    println(Option.sequence(ys))
+
+    val ks = listOf<Option<Int>>()
+    println(Option.sequence(ks))
 }
