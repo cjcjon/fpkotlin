@@ -19,11 +19,25 @@ sealed class Option<out A> {
 
         /* 연습문제 4-4 */
         fun <A> sequence(xs: MyList<Option<A>>): Option<MyList<A>> {
+//            return MyList.foldRight(
+//                xs,
+//                Some(MyList.Nil)
+//            ) { element: Option<A>, acc: Option<MyList<A>> ->
+//                map2(element, acc) { a1: A, a2: MyList<A> ->
+//                    MyList.Cons(a1, a2)
+//                }
+//            }
+
+            return traverse(xs) { it }
+        }
+
+        /* 연습문제 4-5 */
+        fun <A, B> traverse(xa: MyList<A>, f: (A) -> Option<B>): Option<MyList<B>> {
             return MyList.foldRight(
-                xs,
-                Some(MyList.Nil)
-            ) { element: Option<A>, acc: Option<MyList<A>> ->
-                map2(element, acc) { a1: A, a2: MyList<A> ->
+                xa,
+                Some<MyList<B>>(MyList.Nil)
+            ) { element: A, acc: Option<MyList<B>> ->
+                map2(f(element), acc) { a1: B, a2: MyList<B> ->
                     MyList.Cons(a1, a2)
                 }
             }
