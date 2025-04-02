@@ -1,8 +1,7 @@
 package org.example.chapter4
 
-import org.example.common.head
-import org.example.common.tail
 import kotlin.math.pow
+import org.example.chapter3.List as MyList
 
 sealed class Option<out A> {
     data class Some<out A>(val get: A) : Option<A>()
@@ -19,17 +18,15 @@ sealed class Option<out A> {
         }
 
         /* 연습문제 4-4 */
-        fun <A> sequence(xs: List<Option<A>>): Option<List<A>> {
-            tailrec fun go(xs: List<Option<A>>, acc: Option<List<A>>): Option<List<A>> =
-                if (xs.isEmpty()) acc
-                else {
-                    when (val headOpt = xs.head()) {
-                        is None -> None
-                        is Some -> go(xs.tail(), acc.map { it + listOf(headOpt.get) })
-                    }
+        fun <A> sequence(xs: MyList<Option<A>>): Option<MyList<A>> {
+            return MyList.foldRight(
+                xs,
+                Some(MyList.Nil)
+            ) { element: Option<A>, acc: Option<MyList<A>> ->
+                map2(element, acc) { a1: A, a2: MyList<A> ->
+                    MyList.Cons(a1, a2)
                 }
-
-            return go(xs, Some(emptyList()))
+            }
         }
     }
 }
@@ -81,12 +78,12 @@ fun <A, B, C> map2(a: Option<A>, b: Option<B>, f: (A, B) -> C): Option<C> =
     }
 
 fun main() {
-    val xs = listOf(Option.Some(1), Option.Some(2), Option.Some(3))
+    val xs = MyList.of(Option.Some(1), Option.Some(2), Option.Some(3))
     println(Option.sequence(xs))
 
-    val ys = listOf(Option.Some(1), Option.None)
+    val ys = MyList.of(Option.Some(1), Option.None)
     println(Option.sequence(ys))
 
-    val ks = listOf<Option<Int>>()
+    val ks = MyList.of<Option<Int>>()
     println(Option.sequence(ks))
 }
