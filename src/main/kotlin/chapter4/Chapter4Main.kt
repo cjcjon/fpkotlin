@@ -71,17 +71,22 @@ sealed class Either<out E, out A> {
 
         /* 연습문제 4-7 */
         fun <E, A> sequence(xs: MyList<Either<E, A>>): Either<E, MyList<A>> =
-            MyList.foldRight(xs, Right(MyList.Nil)) { element: Either<E, A>, acc: Either<E, MyList<A>> ->
-                map2(element, acc) { a1: A, a2: MyList<A> ->
-                    MyList.Cons(a1, a2)
-                }
-            }
+//            MyList.foldRight(xs, Right(MyList.Nil)) { element: Either<E, A>, acc: Either<E, MyList<A>> ->
+//                map2(element, acc) { a1: A, a2: MyList<A> ->
+//                    MyList.Cons(a1, a2)
+//                }
+//            }
+            traverse(xs) { it }
 
         fun <E, A, B> traverse(xs: MyList<A>, f: (A) -> Either<E, B>): Either<E, MyList<B>> =
-            MyList.foldRight(xs, Right<MyList<B>>(MyList.Nil)) { element: A, acc: Either<E, MyList<B>> ->
-                map2(f(element), acc) { a1: B, a2: MyList<B> ->
-                    MyList.Cons(a1, a2)
-                }
+//            MyList.foldRight(xs, Right<MyList<B>>(MyList.Nil)) { element: A, acc: Either<E, MyList<B>> ->
+//                map2(f(element), acc) { a1: B, a2: MyList<B> ->
+//                    MyList.Cons(a1, a2)
+//                }
+//            }
+            when (xs) {
+                is MyList.Nil -> Right(MyList.Nil)
+                is MyList.Cons -> map2(f(xs.head), traverse(xs.tail, f)) { b, xb -> MyList.Cons(b, xb) }
             }
     }
 }
