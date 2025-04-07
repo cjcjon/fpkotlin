@@ -111,6 +111,28 @@ fun <A, B, C> map2(a: Option<A>, b: Option<B>, f: (A, B) -> C): Option<C> =
         b.map { bValue -> f(aValue, bValue) }
     }
 
+/* 연습문제 4-6 */
+fun <E, A, B> Either<E, A>.map(f: (A) -> B): Either<E, B> = when (this) {
+    is Either.Left -> this
+    is Either.Right -> Either.Right(f(this.value))
+}
+
+fun <E, A, B> Either<E, A>.flatMap(f: (A) -> Either<E, B>): Either<E, B> = when (this) {
+    is Either.Left -> this
+    is Either.Right -> f(this.value)
+}
+
+fun <E, A> Either<E, A>.orElse(f: () -> Either<E, A>): Either<E, A> = when (this) {
+    is Either.Left -> f()
+    is Either.Right -> this
+}
+
+fun <E, A, B, C> map2(
+    ae: Either<E, A>,
+    be: Either<E, B>,
+    f: (A, B) -> C,
+): Either<E, C> = ae.flatMap { a -> be.map { b -> f(a, b) } }
+
 fun main() {
     val xs = MyList.of(Option.Some(1), Option.Some(2), Option.Some(3))
     println(Option.sequence(xs))
