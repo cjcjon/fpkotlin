@@ -4,6 +4,20 @@ sealed class List<out A> {
     data object Nil : List<Nothing>()
     data class Cons<out A>(val head: A, val tail: List<A>) : List<A>()
 
+    fun isEmpty() = when (this) {
+        is Nil -> true
+        is Cons -> false
+    }
+
+    fun size(): Int {
+        tailrec fun go(xs: List<A>, acc: Int): Int = when (xs) {
+            is Nil -> 0
+            is Cons -> go(xs.tail, acc + 1)
+        }
+
+        return go(this, 0)
+    }
+
     companion object {
         fun <A> empty(): List<A> = Nil
 
@@ -203,6 +217,9 @@ sealed class List<out A> {
                     else hasSubsequence(xs.tail, sub)
             }
         }
+
+        fun List<Int>.sum(): Int = sum3(this)
+        fun List<Double>.sum(): Double = foldLeft(this, 0.0) { b, a -> a + b }
     }
 }
 

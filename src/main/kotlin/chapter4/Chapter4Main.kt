@@ -1,5 +1,6 @@
 package org.example.chapter4
 
+import org.example.chapter3.List.Companion.sum
 import kotlin.math.pow
 import org.example.chapter3.List as MyList
 
@@ -42,6 +43,25 @@ sealed class Option<out A> {
                 }
             }
         }
+    }
+}
+
+sealed class Either<out E, out A> {
+    data class Left<out E>(val value: E): Either<E, Nothing>()
+    data class Right<out A>(val value: A): Either<Nothing, A>()
+
+    companion object {
+        fun <A> catches(a: () -> A): Either<Exception, A> =
+            try { Right(a()) }
+            catch (e: Exception) { Left(e) }
+
+        fun mean(xs: MyList<Double>): Either<String, Double> =
+            if (xs.isEmpty()) Left("mean of empty list!")
+            else Right(xs.sum() / xs.size())
+
+        fun saveDiv(x: Int, y: Int): Either<Exception, Int> =
+            try { Right(x / y) }
+            catch (e: Exception) { Left(e) }
     }
 }
 
