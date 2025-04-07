@@ -47,21 +47,42 @@ sealed class Option<out A> {
 }
 
 sealed class Either<out E, out A> {
-    data class Left<out E>(val value: E): Either<E, Nothing>()
-    data class Right<out A>(val value: A): Either<Nothing, A>()
+    data class Left<out E>(val value: E) : Either<E, Nothing>()
+    data class Right<out A>(val value: A) : Either<Nothing, A>()
 
     companion object {
         fun <A> catches(a: () -> A): Either<Exception, A> =
-            try { Right(a()) }
-            catch (e: Exception) { Left(e) }
+            try {
+                Right(a())
+            } catch (e: Exception) {
+                Left(e)
+            }
 
         fun mean(xs: MyList<Double>): Either<String, Double> =
             if (xs.isEmpty()) Left("mean of empty list!")
             else Right(xs.sum() / xs.size())
 
         fun saveDiv(x: Int, y: Int): Either<Exception, Int> =
-            try { Right(x / y) }
-            catch (e: Exception) { Left(e) }
+            try {
+                Right(x / y)
+            } catch (e: Exception) {
+                Left(e)
+            }
+
+        /* 연습문제 4-7 */
+        fun <E, A> sequence(xs: MyList<Either<E, A>>): Either<E, MyList<A>> =
+            MyList.foldRight(xs, Right(MyList.Nil)) { element: Either<E, A>, acc: Either<E, MyList<A>> ->
+                map2(element, acc) { a1: A, a2: MyList<A> ->
+                    MyList.Cons(a1, a2)
+                }
+            }
+
+        fun <E, A, B> traverse(xs: MyList<A>, f: (A) -> Either<E, B>): Either<E, MyList<B>> =
+            MyList.foldRight(xs, Right<MyList<B>>(MyList.Nil)) { element: A, acc: Either<E, MyList<B>> ->
+                map2(f(element), acc) { a1: B, a2: MyList<B> ->
+                    MyList.Cons(a1, a2)
+                }
+            }
     }
 }
 
