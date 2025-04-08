@@ -60,10 +60,21 @@ fun <A> Stream<A>.drop(n: Int): Stream<A> = when (this) {
     is Stream.Empty -> this
 }
 
+fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream <A> = when (this) {
+    is Stream.Cons ->
+        if (p(this.head())) Stream.cons(this.head) { this.tail().takeWhile(p) }
+        else Stream.Empty
+
+    is Stream.Empty -> this
+}
+
 fun main() {
     val streamA = Stream.of(1, 2, 3, 4, 5)
     println(streamA.take(2).toList())
 
     val streamB = Stream.of(1, 2, 3, 4, 5)
     println(streamB.drop(3).toList())
+
+    val streamC = Stream.of(1, 2, 3, 4, 5)
+    println(streamC.takeWhile { it < 3 }.toList())
 }
