@@ -1,6 +1,7 @@
 package org.example.chapter4
 
 import org.example.chapter3.List.Companion.sum
+import org.example.chapter3.sum
 import kotlin.math.pow
 import org.example.chapter3.List as MyList
 

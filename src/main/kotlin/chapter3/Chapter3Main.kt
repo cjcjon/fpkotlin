@@ -1,5 +1,8 @@
 package org.example.chapter3
 
+import org.example.chapter3.List.Companion.foldLeft
+import org.example.chapter3.List.Companion.sum3
+
 sealed class List<out A> {
     data object Nil : List<Nothing>()
     data class Cons<out A>(val head: A, val tail: List<A>) : List<A>()
@@ -217,11 +220,11 @@ sealed class List<out A> {
                     else hasSubsequence(xs.tail, sub)
             }
         }
-
-        fun List<Int>.sum(): Int = sum3(this)
-        fun List<Double>.sum(): Double = foldLeft(this, 0.0) { b, a -> a + b }
     }
 }
+
+fun List<Int>.sum(): Int = sum3(this)
+fun List<Double>.sum(): Double = foldLeft(this, 0.0) { b, a -> a + b }
 
 sealed class Tree<out A> {
     data class Leaf<A>(val value: A): Tree<A>()
