@@ -1,5 +1,6 @@
 package org.example.chapter5
 
+import org.example.chapter3.List
 import org.example.chapter4.Option
 
 sealed class Stream<out A> {
@@ -31,6 +32,16 @@ fun <A> Stream<A>.headOption(): Option<A> =
         is Stream.Empty -> Option.None
         is Stream.Cons -> Option.Some(head())
     }
+
+/* 연습문제 5-1 */
+fun <A> Stream<A>.toList(): List<A> {
+    tailrec fun go(xs: Stream<A>, acc: List<A>): List<A> = when (xs) {
+        is Stream.Cons -> go(xs.tail(), List.Cons(xs.head(), acc))
+        is Stream.Empty -> acc
+    }
+
+    return List.reverse(go(this, List.Nil))
+}
 
 fun main() {
 
