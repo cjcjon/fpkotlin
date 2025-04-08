@@ -7,9 +7,9 @@ sealed class Stream<out A> {
     data class Cons<out A>(
         val head: () -> A,
         val tail: () -> Stream<A>,
-    ): Stream<A>()
+    ) : Stream<A>()
 
-    data object Empty: Stream<Nothing>()
+    data object Empty : Stream<Nothing>()
 
     companion object {
         fun <A> cons(hd: () -> A, tl: () -> Stream<A>): Stream<A> {
@@ -43,6 +43,27 @@ fun <A> Stream<A>.toList(): List<A> {
     return List.reverse(go(this, List.Nil))
 }
 
-fun main() {
+/* 연습문제 5-2 */
+fun <A> Stream<A>.take(n: Int): Stream<A> = when (this) {
+    is Stream.Cons ->
+        if (n > 0) Stream.cons(this.head) { this.tail().take(n - 1) }
+        else Stream.Empty
 
+    is Stream.Empty -> this
+}
+
+fun <A> Stream<A>.drop(n: Int): Stream<A> = when (this) {
+    is Stream.Cons ->
+        if (n > 0) this.tail().drop(n - 1)
+        else this
+
+    is Stream.Empty -> this
+}
+
+fun main() {
+    val streamA = Stream.of(1, 2, 3, 4, 5)
+    println(streamA.take(2).toList())
+
+    val streamB = Stream.of(1, 2, 3, 4, 5)
+    println(streamB.drop(3).toList())
 }
