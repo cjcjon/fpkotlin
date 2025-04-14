@@ -24,6 +24,9 @@ sealed class Stream<out A> {
         is Empty -> z()
     }
 
+    fun find(p: (A) -> Boolean): Option<A> =
+        filter(p).headOption()
+
     companion object {
         fun <A> cons(hd: () -> A, tl: () -> Stream<A>): Stream<A> {
             val head: A by lazy(hd)
