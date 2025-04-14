@@ -73,17 +73,24 @@ fun <A> Stream<A>.drop(n: Int): Stream<A> = when (this) {
     is Stream.Empty -> this
 }
 
-fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream <A> = when (this) {
-    is Stream.Cons ->
-        if (p(this.head())) Stream.cons(this.head) { this.tail().takeWhile(p) }
-        else Stream.Empty
-
-    is Stream.Empty -> this
-}
+//fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream <A> = when (this) {
+//    is Stream.Cons ->
+//        if (p(this.head())) Stream.cons(this.head) { this.tail().takeWhile(p) }
+//        else Stream.Empty
+//
+//    is Stream.Empty -> this
+//}
 
 /* 연습문제 5-4 */
 fun <A> Stream<A>.forAll(p: (A) -> Boolean): Boolean =
     this.foldRight({ true }, { a, b -> p(a) && b() })
+
+/* 연습문제 5-5 */
+fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream<A> =
+    this.foldRight({ Stream.empty() }, { a, b ->
+        if (p(a)) Stream.cons({ a }, b)
+        else b()
+    })
 
 fun main() {
     val streamA = Stream.of(1, 2, 3, 4, 5)
