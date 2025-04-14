@@ -40,6 +40,9 @@ sealed class Stream<out A> {
         fun <A> of(vararg xs: A): Stream<A> =
             if (xs.isEmpty()) empty()
             else cons({ xs[0] }, { of(*xs.sliceArray(1 until xs.size)) })
+
+        fun <A> constant(a: A): Stream<A> =
+            cons({ a }, { constant(a) })
     }
 }
 
