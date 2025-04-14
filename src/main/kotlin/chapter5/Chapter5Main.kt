@@ -40,11 +40,11 @@ sealed class Stream<out A> {
     }
 }
 
-fun <A> Stream<A>.headOption(): Option<A> =
-    when (this) {
-        is Stream.Empty -> Option.None
-        is Stream.Cons -> Option.Some(head())
-    }
+//fun <A> Stream<A>.headOption(): Option<A> =
+//    when (this) {
+//        is Stream.Empty -> Option.None
+//        is Stream.Cons -> Option.Some(head())
+//    }
 
 /* 연습문제 5-1 */
 fun <A> Stream<A>.toList(): List<A> {
@@ -91,6 +91,13 @@ fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream<A> =
         if (p(a)) Stream.cons({ a }, b)
         else b()
     })
+
+/* 연습문제 5-6 */
+fun <A> Stream<A>.headOption(): Option<A> =
+    this.foldRight({ Option.None as Option<A> }, { a, b ->
+        Option.Some(a)
+    })
+
 
 fun main() {
     val streamA = Stream.of(1, 2, 3, 4, 5)
