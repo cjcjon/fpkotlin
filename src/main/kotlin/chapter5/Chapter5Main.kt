@@ -77,7 +77,6 @@ sealed class Stream<out A> {
 
         fun ones(): Stream<Int> =
             unfold(1) { _ -> Option.Some(1 to 1) }
-
     }
 }
 
@@ -92,13 +91,13 @@ fun <A> Stream<A>.toList(): List<A> {
 }
 
 /* 연습문제 5-2 */
-fun <A> Stream<A>.take(n: Int): Stream<A> = when (this) {
-    is Stream.Cons ->
-        if (n > 0) Stream.cons(this.head) { this.tail().take(n - 1) }
-        else Stream.Empty
-
-    is Stream.Empty -> this
-}
+//fun <A> Stream<A>.take(n: Int): Stream<A> = when (this) {
+//    is Stream.Cons ->
+//        if (n > 0) Stream.cons(this.head) { this.tail().take(n - 1) }
+//        else Stream.Empty
+//
+//    is Stream.Empty -> this
+//}
 
 fun <A> Stream<A>.drop(n: Int): Stream<A> = when (this) {
     is Stream.Cons ->
@@ -113,11 +112,11 @@ fun <A> Stream<A>.forAll(p: (A) -> Boolean): Boolean =
     this.foldRight({ true }, { a, b -> p(a) && b() })
 
 /* 연습문제 5-5 */
-fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream<A> =
-    this.foldRight({ Stream.empty() }, { a, b ->
-        if (p(a)) Stream.cons({ a }, b)
-        else b()
-    })
+//fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream<A> =
+//    this.foldRight({ Stream.empty() }, { a, b ->
+//        if (p(a)) Stream.cons({ a }, b)
+//        else b()
+//    })
 
 /* 연습문제 5-6 */
 fun <A> Stream<A>.headOption(): Option<A> =
@@ -126,10 +125,10 @@ fun <A> Stream<A>.headOption(): Option<A> =
     })
 
 /* 연습문제 5-7 */
-fun <A, B> Stream<A>.map(f: (A) -> B): Stream<B> =
-    this.foldRight({ Stream.empty() }, { a, b ->
-        Stream.cons({ f(a) }, b)
-    })
+//fun <A, B> Stream<A>.map(f: (A) -> B): Stream<B> =
+//    this.foldRight({ Stream.empty() }, { a, b ->
+//        Stream.cons({ f(a) }, b)
+//    })
 
 fun <A> Stream<A>.filter(p: (A) -> Boolean): Stream<A> = when (this) {
     is Stream.Cons ->
@@ -143,6 +142,83 @@ fun <A> Stream<A>.append(a: () -> Stream<A>): Stream<A> = when (this) {
     is Stream.Cons -> Stream.cons(this.head, { this.tail().append(a) })
     is Stream.Empty -> a()
 }
+
+/* 연습문제 5-13 */
+fun <A, B> Stream<A>.map(f: (A) -> B): Stream<B> =
+    Stream.unfold(this) { stream ->
+        when (stream) {
+            is Stream.Cons -> Option.Some(f(stream.head()) to stream.tail())
+            is Stream.Empty -> Option.None
+        }
+    }
+
+fun <A> Stream<A>.take(n: Int): Stream<A> =
+    Stream.unfold(this) { stream ->
+        when (stream) {
+            is Stream.Cons ->
+                if (n > 0) Option.Some(stream.head() to stream.tail().take(n - 1))
+                else Option.None
+
+            is Stream.Empty -> Option.None
+        }
+    }
+
+fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream<A> =
+    Stream.unfold(this) { stream ->
+        when (stream) {
+            is Stream.Cons ->
+                if (p(stream.head())) Option.Some(stream.head() to stream.tail())
+                else Option.None
+
+            is Stream.Empty -> Option.None
+        }
+    }
+
+fun <A, B, C> Stream<A>.zipWith(
+    that: Stream<B>,
+    f: (A, B) -> C
+): Stream<C> = Stream.unfold(this to that) { (streamA, streamB) ->
+    when (streamA) {
+        is Stream.Cons ->
+            when (streamB) {
+                is Stream.Cons -> Option.Some(
+                    f(streamA.head(), streamB.head()) to (streamA.tail() to streamB.tail())
+                )
+
+                is Stream.Empty -> Option.None
+            }
+
+        is Stream.Empty -> Option.None
+    }
+}
+
+fun <A, B> Stream<A>.zipAll(
+    that: Stream<B>
+): Stream<Pair<Option<A>, Option<B>>> =
+    Stream.unfold(this to that) { (streamA, streamB) ->
+        when (streamA) {
+            is Stream.Cons ->
+                when (streamB) {
+                    is Stream.Cons -> Option.Some(
+                        (Option.Some(streamA.head()) to Option.Some(streamB.head())) to (streamA.tail() to streamB.tail())
+                    )
+
+                    is Stream.Empty -> Option.Some(
+                        (Option.Some(streamA.head()) to Option.None) to (streamA.tail() to Stream.empty())
+                    )
+                }
+
+            is Stream.Empty ->
+                when (streamB) {
+                    is Stream.Cons -> Option.Some(
+                        (Option.None to Option.Some(streamB.head())) to (Stream.empty<A>() to streamB.tail())
+                    )
+
+                    is Stream.Empty ->
+                        Option.None
+                }
+        }
+    }
 
 fun main() {
     val streamA = Stream.of(1, 2, 3, 4, 5)
