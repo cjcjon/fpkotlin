@@ -48,6 +48,14 @@ sealed class Stream<out A> {
         /* 연습문제 5-9 */
         fun from(n: Int): Stream<Int> =
             cons({ n }, { from(n + 1) })
+
+        /* 연습문제 5-10 */
+        fun fibs(): Stream<Int> {
+            fun go(x: Int, y: Int): Stream<Int> =
+                cons({ x + y }, { go(y, x + y) })
+
+            return cons({ 0 }, { cons({ 1 }, { go(0, 1) }) })
+        }
     }
 }
 
