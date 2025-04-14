@@ -2,6 +2,8 @@ package org.example.chapter5
 
 import org.example.chapter3.List
 import org.example.chapter4.Option
+import org.example.chapter4.getOrElse
+import org.example.chapter4.map
 
 sealed class Stream<out A> {
     data class Cons<out A>(
@@ -56,6 +58,12 @@ sealed class Stream<out A> {
 
             return cons({ 0 }, { cons({ 1 }, { go(0, 1) }) })
         }
+
+        /* 연습문제 5-11 */
+        fun <A, S> unfold(z: S, f: (S) -> Option<Pair<A, S>>): Stream<A> =
+            f(z).map { (value, state) ->
+                cons({ value }, { unfold(state, f) })
+            }.getOrElse { empty() }
     }
 }
 
