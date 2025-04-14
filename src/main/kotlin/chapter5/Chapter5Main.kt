@@ -41,8 +41,13 @@ sealed class Stream<out A> {
             if (xs.isEmpty()) empty()
             else cons({ xs[0] }, { of(*xs.sliceArray(1 until xs.size)) })
 
+        /* 연습문제 5-8 */
         fun <A> constant(a: A): Stream<A> =
             cons({ a }, { constant(a) })
+
+        /* 연습문제 5-9 */
+        fun from(n: Int): Stream<Int> =
+            cons({ n }, { from(n + 1) })
     }
 }
 
