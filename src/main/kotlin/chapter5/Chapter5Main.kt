@@ -44,26 +44,40 @@ sealed class Stream<out A> {
             else cons({ xs[0] }, { of(*xs.sliceArray(1 until xs.size)) })
 
         /* 연습문제 5-8 */
-        fun <A> constant(a: A): Stream<A> =
-            cons({ a }, { constant(a) })
+//        fun <A> constant(a: A): Stream<A> =
+//            cons({ a }, { constant(a) })
 
         /* 연습문제 5-9 */
-        fun from(n: Int): Stream<Int> =
-            cons({ n }, { from(n + 1) })
+//        fun from(n: Int): Stream<Int> =
+//            cons({ n }, { from(n + 1) })
 
         /* 연습문제 5-10 */
-        fun fibs(): Stream<Int> {
-            fun go(x: Int, y: Int): Stream<Int> =
-                cons({ x + y }, { go(y, x + y) })
-
-            return cons({ 0 }, { cons({ 1 }, { go(0, 1) }) })
-        }
+//        fun fibs(): Stream<Int> {
+//            fun go(x: Int, y: Int): Stream<Int> =
+//                cons({ x + y }, { go(y, x + y) })
+//
+//            return cons({ 0 }, { cons({ 1 }, { go(0, 1) }) })
+//        }
 
         /* 연습문제 5-11 */
         fun <A, S> unfold(z: S, f: (S) -> Option<Pair<A, S>>): Stream<A> =
             f(z).map { (value, state) ->
                 cons({ value }, { unfold(state, f) })
             }.getOrElse { empty() }
+
+        /* 연습문제 5-12 */
+        fun fibs(): Stream<Int> =
+            unfold(0 to 1) { (curr, next) -> Option.Some(curr to (next to (curr + next))) }
+
+        fun from(n: Int): Stream<Int> =
+            unfold(n) { value -> Option.Some(value to value + 1) }
+
+        fun constant(n: Int): Stream<Int> =
+            unfold(n) { _ -> Option.Some(n to n) }
+
+        fun ones(): Stream<Int> =
+            unfold(1) { _ -> Option.Some(1 to 1) }
+
     }
 }
 
