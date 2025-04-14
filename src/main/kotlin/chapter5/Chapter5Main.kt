@@ -40,12 +40,6 @@ sealed class Stream<out A> {
     }
 }
 
-//fun <A> Stream<A>.headOption(): Option<A> =
-//    when (this) {
-//        is Stream.Empty -> Option.None
-//        is Stream.Cons -> Option.Some(head())
-//    }
-
 /* 연습문제 5-1 */
 fun <A> Stream<A>.toList(): List<A> {
     tailrec fun go(xs: Stream<A>, acc: List<A>): List<A> = when (xs) {
@@ -73,14 +67,6 @@ fun <A> Stream<A>.drop(n: Int): Stream<A> = when (this) {
     is Stream.Empty -> this
 }
 
-//fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream <A> = when (this) {
-//    is Stream.Cons ->
-//        if (p(this.head())) Stream.cons(this.head) { this.tail().takeWhile(p) }
-//        else Stream.Empty
-//
-//    is Stream.Empty -> this
-//}
-
 /* 연습문제 5-4 */
 fun <A> Stream<A>.forAll(p: (A) -> Boolean): Boolean =
     this.foldRight({ true }, { a, b -> p(a) && b() })
@@ -98,6 +84,24 @@ fun <A> Stream<A>.headOption(): Option<A> =
         Option.Some(a)
     })
 
+/* 연습문제 5-7 */
+fun <A, B> Stream<A>.map(f: (A) -> B): Stream<B> =
+    this.foldRight({ Stream.empty() }, { a, b ->
+        Stream.cons({ f(a) }, b)
+    })
+
+fun <A> Stream<A>.filter(p: (A) -> Boolean): Stream<A> = when (this) {
+    is Stream.Cons ->
+        if (p(this.head())) Stream.cons(this.head, { this.tail().filter(p) })
+        else this.tail().filter(p)
+
+    is Stream.Empty -> Stream.Empty
+}
+
+fun <A> Stream<A>.append(a: () -> Stream<A>): Stream<A> = when (this) {
+    is Stream.Cons -> Stream.cons(this.head, { this.tail().append(a) })
+    is Stream.Empty -> a()
+}
 
 fun main() {
     val streamA = Stream.of(1, 2, 3, 4, 5)
