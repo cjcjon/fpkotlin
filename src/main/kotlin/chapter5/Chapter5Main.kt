@@ -81,6 +81,10 @@ fun <A> Stream<A>.takeWhile(p: (A) -> Boolean): Stream <A> = when (this) {
     is Stream.Empty -> this
 }
 
+/* 연습문제 5-4 */
+fun <A> Stream<A>.forAll(p: (A) -> Boolean): Boolean =
+    this.foldRight({ true }, { a, b -> p(a) && b() })
+
 fun main() {
     val streamA = Stream.of(1, 2, 3, 4, 5)
     println(streamA.take(2).toList())
