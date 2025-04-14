@@ -11,6 +11,19 @@ sealed class Stream<out A> {
 
     data object Empty : Stream<Nothing>()
 
+    fun exists(p: (A) -> Boolean): Boolean = when (this) {
+        is Cons -> p(this.head()) || this.tail().exists(p)
+        else -> false
+    }
+
+    fun <B> foldRight(
+        z: () -> B,
+        f: (A, () -> B) -> B
+    ): B = when (this) {
+        is Cons -> f(this.head()) { tail().foldRight(z, f) }
+        is Empty -> z()
+    }
+
     companion object {
         fun <A> cons(hd: () -> A, tl: () -> Stream<A>): Stream<A> {
             val head: A by lazy(hd)
