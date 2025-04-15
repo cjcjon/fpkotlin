@@ -22,3 +22,10 @@ fun nonNegativeInt(rng: RNG): Pair<Int, RNG> {
     else if (rndNum < 0) -rndNum to nextRng
     else rndNum to nextRng
 }
+
+/* 연습문제 6-2 */
+fun double(rng: RNG): Pair<Double, RNG> {
+    val (rndNum, nextRng) = nonNegativeInt(rng)
+
+    return (rndNum / (Int.MAX_VALUE.toDouble() + 1)) to nextRng
+}
