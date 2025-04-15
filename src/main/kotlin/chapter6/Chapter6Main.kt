@@ -1,5 +1,7 @@
 package org.example.chapter6
 
+import org.example.chapter3.List
+
 interface RNG {
     fun nextInt(): Pair<Int, RNG>
 }
@@ -51,4 +53,17 @@ fun double3(rng: RNG): Pair<Triple<Double, Double, Double>, RNG> {
     val (double3, rng3) = double(rng2)
 
     return Triple(double1, double2, double3) to rng3
+}
+
+/* 연습문제 6-4 */
+fun ints(count: Int, rng: RNG): Pair<List<Int>, RNG> {
+    tailrec fun go(count: Int, acc: Pair<List<Int>, RNG>): Pair<List<Int>, RNG> =
+        if (count > 0) {
+            val (accInts, currRng) = acc
+            val (nextInt, nextRng) = currRng.nextInt()
+
+            go(count - 1, List.Cons(nextInt, accInts) to nextRng)
+        } else acc
+
+    return go(count, List.empty<Int>() to rng)
 }
