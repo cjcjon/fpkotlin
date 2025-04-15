@@ -220,6 +220,10 @@ fun <A, B> Stream<A>.zipAll(
         }
     }
 
+/* 연습문제 5-14 */
+fun <A> Stream<A>.startsWith(that: Stream<A>): Boolean =
+    this.zipWith(that) { a, b -> a to b }.forAll { (a, b) -> a == b }
+
 fun main() {
     val streamA = Stream.of(1, 2, 3, 4, 5)
     println(streamA.take(2).toList())
