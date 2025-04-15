@@ -13,3 +13,12 @@ data class SimpleRNG(val seed: Long): RNG {
         return n to nextRNG
     }
 }
+
+/* 연습문제 6-1 */
+fun nonNegativeInt(rng: RNG): Pair<Int, RNG> {
+    val (rndNum, nextRng) = rng.nextInt()
+
+    return if (rndNum == Int.MIN_VALUE) Int.MAX_VALUE to nextRng
+    else if (rndNum < 0) -rndNum to nextRng
+    else rndNum to nextRng
+}
