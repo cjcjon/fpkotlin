@@ -224,6 +224,13 @@ fun <A, B> Stream<A>.zipAll(
 fun <A> Stream<A>.startsWith(that: Stream<A>): Boolean =
     this.zipWith(that) { a, b -> a to b }.forAll { (a, b) -> a == b }
 
+/* 연습문제 5-15 */
+fun <A> Stream<A>.tails(): Stream<Stream<A>> =
+    Stream.unfold(this) { stream -> when (stream) {
+        is Stream.Cons -> Option.Some(stream to stream.tail())
+        is Stream.Empty -> Option.None
+    } }
+
 fun main() {
     val streamA = Stream.of(1, 2, 3, 4, 5)
     println(streamA.take(2).toList())
