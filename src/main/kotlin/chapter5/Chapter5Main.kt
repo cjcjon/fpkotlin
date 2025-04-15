@@ -29,6 +29,9 @@ sealed class Stream<out A> {
     fun find(p: (A) -> Boolean): Option<A> =
         filter(p).headOption()
 
+    fun <A> hasSubsequence(s: Stream<A>): Boolean =
+        this.tails().exists { it.startsWith(s) }
+
     companion object {
         fun <A> cons(hd: () -> A, tl: () -> Stream<A>): Stream<A> {
             val head: A by lazy(hd)
@@ -226,10 +229,23 @@ fun <A> Stream<A>.startsWith(that: Stream<A>): Boolean =
 
 /* 연습문제 5-15 */
 fun <A> Stream<A>.tails(): Stream<Stream<A>> =
-    Stream.unfold(this) { stream -> when (stream) {
-        is Stream.Cons -> Option.Some(stream to stream.tail())
-        is Stream.Empty -> Option.None
-    } }
+    Stream.unfold(this) { stream ->
+        when (stream) {
+            is Stream.Cons -> Option.Some(stream to stream.tail())
+            is Stream.Empty -> Option.None
+        }
+    }
+
+/* 연습문제 5-16 */
+fun <A, B> Stream<A>.scanRight(z: B, f: (A, () -> B) -> B): Stream<B> =
+    this.foldRight(
+        { z to Stream.of(z) },
+        { a: A, p0: () -> Pair<B, Stream<B>> ->
+            val p1: Pair<B, Stream<B>> by lazy { p0() }
+            val b2: B = f(a) { p1.first }
+            Pair<B, Stream<B>>(b2, Stream.cons({ b2 }, { p1.second }))
+        }
+    ).second
 
 fun main() {
     val streamA = Stream.of(1, 2, 3, 4, 5)
