@@ -29,3 +29,26 @@ fun double(rng: RNG): Pair<Double, RNG> {
 
     return (rndNum / (Int.MAX_VALUE.toDouble() + 1)) to nextRng
 }
+
+/* 연습문제 6-3 */
+fun intDouble(rng: RNG): Pair<Pair<Int, Double>, RNG> {
+    val (intNum, intRng) = rng.nextInt()
+    val (doubleNum, doubleRng) = double(intRng)
+
+    return (intNum to doubleNum) to doubleRng
+}
+
+fun doubleInt(rng: RNG): Pair<Pair<Double, Int>, RNG> {
+    val (doubleNum, doubleRng) = double(rng)
+    val (intNum, intRng) = doubleRng.nextInt()
+
+    return (doubleNum to intNum) to intRng
+}
+
+fun double3(rng: RNG): Pair<Triple<Double, Double, Double>, RNG> {
+    val (double1, rng1) = double(rng)
+    val (double2, rng2) = double(rng1)
+    val (double3, rng3) = double(rng2)
+
+    return Triple(double1, double2, double3) to rng3
+}
