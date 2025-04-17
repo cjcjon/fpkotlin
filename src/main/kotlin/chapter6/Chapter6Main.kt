@@ -72,10 +72,10 @@ typealias Rand<A> = (RNG) -> Pair<A, RNG>
 
 fun <A> unit(a: A): Rand<A> = { rng -> a to rng }
 
-fun <A, B> map(s: Rand<A>, f: (A) -> B): Rand<B> = { rng ->
-    val (a, rng2) = s(rng)
-    f(a) to rng2
-}
+//fun <A, B> map(s: Rand<A>, f: (A) -> B): Rand<B> = { rng ->
+//    val (a, rng2) = s(rng)
+//    f(a) to rng2
+//}
 
 fun nonNegativeEven(): Rand<Int> =
     map(::nonNegativeInt) { it - (it % 2) }
@@ -85,16 +85,16 @@ fun doubleR(): Rand<Double> =
     map(::nonNegativeInt) { it / (Int.MAX_VALUE.toDouble() + 1) }
 
 /* 연습문제 6-6 */
-fun <A, B, C> map2(
-    ra: Rand<A>,
-    rb: Rand<B>,
-    f: (A, B) -> C,
-): Rand<C> = { rng ->
-    val (a, rng1) = ra(rng)
-    val (b, rng2) = rb(rng1)
-
-    f(a, b) to rng2
-}
+//fun <A, B, C> map2(
+//    ra: Rand<A>,
+//    rb: Rand<B>,
+//    f: (A, B) -> C,
+//): Rand<C> = { rng ->
+//    val (a, rng1) = ra(rng)
+//    val (b, rng2) = rb(rng1)
+//
+//    f(a, b) to rng2
+//}
 
 fun <A, B> both(ra: Rand<A>, rb: Rand<B>): Rand<Pair<A, B>> =
     map2(ra, rb) { a, b -> a to b }
@@ -134,3 +134,17 @@ fun nonNegativeIntLessThan(n: Int): Rand<Int> =
         if (i + (n - 1) - mod >= 0) unit(mod)
         else nonNegativeIntLessThan(n)
     }
+
+/* 연습문제 6-9 */
+fun <A, B> map(s: Rand<A>, f: (A) -> B): Rand<B> =
+    flatMap(s) { a -> unit(f(a)) }
+
+fun <A, B, C> map2(
+    ra: Rand<A>,
+    rb: Rand<B>,
+    f: (A, B) -> C,
+): Rand<C> = flatMap(ra) { a ->
+    map(rb) { b ->
+        f(a, b)
+    }
+}
