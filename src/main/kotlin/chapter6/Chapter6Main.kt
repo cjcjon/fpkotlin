@@ -120,3 +120,17 @@ fun ints2(count: Int, rng: RNG): Pair<List<Int>, RNG> {
 
     return sequence(go(count))(rng)
 }
+
+/* 연습문제 6-8 */
+fun <A, B> flatMap(f: Rand<A>, g: (A) -> Rand<B>): Rand<B> = { rng ->
+    val (value, rng2) = f(rng)
+
+    g(value)(rng2)
+}
+
+fun nonNegativeIntLessThan(n: Int): Rand<Int> =
+    flatMap(::nonNegativeInt) { i ->
+        val mod = i % n
+        if (i + (n - 1) - mod >= 0) unit(mod)
+        else nonNegativeIntLessThan(n)
+    }
