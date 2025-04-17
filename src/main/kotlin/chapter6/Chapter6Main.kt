@@ -83,3 +83,15 @@ fun nonNegativeEven(): Rand<Int> =
 /* 연습문제 6-5 */
 fun doubleR(): Rand<Double> =
     map(::nonNegativeInt) { it / (Int.MAX_VALUE.toDouble() + 1) }
+
+/* 연습문제 6-6 */
+fun <A, B, C> map2(
+    ra: Rand<A>,
+    rb: Rand<B>,
+    f: (A, B) -> C,
+): Rand<C> = { rng ->
+    val (a, rng1) = ra(rng)
+    val (b, rng2) = rb(rng1)
+
+    f(a, b) to rng2
+}
