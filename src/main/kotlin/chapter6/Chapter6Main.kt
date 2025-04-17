@@ -95,3 +95,28 @@ fun <A, B, C> map2(
 
     f(a, b) to rng2
 }
+
+fun <A, B> both(ra: Rand<A>, rb: Rand<B>): Rand<Pair<A, B>> =
+    map2(ra, rb) { a, b -> a to b }
+
+val intR: Rand<Int> = { rng -> rng.nextInt() }
+val doubleR: Rand<Double> =
+    map(::nonNegativeInt) { i ->
+        i / (Int.MAX_VALUE.toDouble() + 1)
+    }
+val intDoubleR: Rand<Pair<Int, Double>> = both(intR, doubleR)
+val doubleIntR: Rand<Pair<Double, Int>> = both(doubleR, intR)
+
+/* 연습문제 6-7 */
+fun <A> sequence(fs: List<Rand<A>>): Rand<List<A>> =
+    List.foldRight(fs, unit(List.empty())) { f, acc ->
+        map2(f, acc) { h, t -> List.Cons(h, t) }
+    }
+
+fun ints2(count: Int, rng: RNG): Pair<List<Int>, RNG> {
+    fun go(c: Int): List<Rand<Int>> =
+        if (c == 0) List.Nil
+        else List.Cons({ r -> 1 to r }, go(c - 1))
+
+    return sequence(go(count))(rng)
+}
