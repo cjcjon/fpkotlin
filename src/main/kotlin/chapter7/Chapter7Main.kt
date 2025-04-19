@@ -98,9 +98,9 @@ object Pars {
     fun <A, B> map(pa: Par<A>, f: (A) -> B): Par<B> =
         map2(pa, unit(Unit), { a, _ -> f(a) })
 
-    fun <A, B> parMap(ps: List<A>, f: (A) -> B): Par<List<B>> {
+    fun <A, B> parMap(ps: List<A>, f: (A) -> B): Par<List<B>> = fork {
         val fbs: List<Par<B>> = ps.map(asyncF(f))
-        return sequence(fbs)
+        sequence(fbs)
     }
 
     fun sortPar(parList: Par<List<Int>>): Par<List<Int>> =
