@@ -67,7 +67,8 @@ object Pars {
     ): Par<C> = { es: ExecutorService ->
         val af: Future<A> = a(es)
         val bf: Future<B> = b(es)
-        UnitFuture(f(af.get(), bf.get()))
+
+        TimedMap2Future(af, bf, f)
     }
 
     fun <A> fork(
