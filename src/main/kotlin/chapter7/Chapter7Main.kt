@@ -100,7 +100,7 @@ object Pars {
 
     fun <A, B> parMap(ps: List<A>, f: (A) -> B): Par<List<B>> {
         val fbs: List<Par<B>> = ps.map(asyncF(f))
-        TODO()
+        return sequence(fbs)
     }
 
     fun sortPar(parList: Par<List<Int>>): Par<List<Int>> =
