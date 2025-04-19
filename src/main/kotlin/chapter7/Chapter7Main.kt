@@ -27,6 +27,13 @@ object Pars {
     fun <A> unit(a: A): Par<A> =
         { es: ExecutorService -> UnitFuture(a) }
 
+    fun <A> lazyUnit(a: () -> A): Par<A> =
+        { es: ExecutorService -> UnitFuture(a()) }
+
+    /* 연습문제 7-4 */
+    fun <A, B> asyncF(f: (A) -> B): (A) -> Par<B> =
+        { a -> lazyUnit { f(a) } }
+
     data class UnitFuture<A>(val a: A): Future<A> {
         override fun get(): A = a
         override fun get(timeout: Long, timeUnit: TimeUnit): A = a
