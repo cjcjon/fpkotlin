@@ -2,6 +2,7 @@ package org.example.chapter7
 
 import arrow.core.firstOrNone
 import arrow.core.getOrElse
+import org.example.common.head
 import org.example.common.splitAt
 import java.util.concurrent.TimeUnit
 
@@ -83,4 +84,25 @@ object Pars {
     ): Par<A> = { es: ExecutorService ->
         es.submit { a()(es).get() }
     }
+
+    /* 연습문제 7-5 */
+    fun <A> sequence(ps: List<Par<A>>): Par<List<A>> = when {
+        ps.isEmpty() -> unit(listOf<Nothing>())
+        ps.size == 1 -> map(ps.head()) { listOf(it) }
+        else -> {
+            val (l, r) = ps.splitAt(ps.size / 2)
+            map2(sequence(l), sequence(r)) { la, lb -> la + lb }
+        }
+    }
+
+    fun <A, B> map(pa: Par<A>, f: (A) -> B): Par<B> =
+        map2(pa, unit(Unit), { a, _ -> f(a) })
+
+    fun <A, B> parMap(ps: List<A>, f: (A) -> B): Par<List<B>> {
+        val fbs: List<Par<B>> = ps.map(asyncF(f))
+        TODO()
+    }
+
+    fun sortPar(parList: Par<List<Int>>): Par<List<Int>> =
+        map(parList) { it.sorted() }
 }
