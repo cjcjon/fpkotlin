@@ -85,6 +85,9 @@ object Pars {
         es.submit { a()(es).get() }
     }
 
+    fun <A> delay(pa: () -> Par<A>): Par<A> =
+        { es -> pa()(es) }
+
     /* 연습문제 7-5 */
     fun <A> sequence(ps: List<Par<A>>): Par<List<A>> = when {
         ps.isEmpty() -> unit(listOf<Nothing>())
