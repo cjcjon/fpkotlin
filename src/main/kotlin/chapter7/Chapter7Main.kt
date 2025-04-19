@@ -103,6 +103,17 @@ object Pars {
         sequence(fbs)
     }
 
+    /* 연습문제 7-6 */
+    fun <A> parFilter(sa: List<A>, f: (A) -> Boolean): Par<List<A>> {
+        val pars: List<Par<A>> = sa.map { lazyUnit { it } }
+
+        return map(sequence(pars)) { la: List<A> ->
+            la.flatMap { a ->
+                if (f(a)) listOf(a) else emptyList()
+            }
+        }
+    }
+
     fun sortPar(parList: Par<List<Int>>): Par<List<Int>> =
         map(parList) { it.sorted() }
 }
