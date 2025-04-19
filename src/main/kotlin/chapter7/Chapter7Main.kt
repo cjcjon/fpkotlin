@@ -1,7 +1,5 @@
 package org.example.chapter7
 
-import arrow.core.firstOrNone
-import arrow.core.getOrElse
 import org.example.common.head
 import org.example.common.splitAt
 import java.util.concurrent.TimeUnit
@@ -135,12 +133,12 @@ object Pars {
 //    }
 
     /* 연습문제 7-12 */
-    fun <A, B> chooser(pa: Par<A>, choices: (A) -> Par<B>): Par<B> = { es: ExecutorService ->
+    fun <A, B> flatMap(pa: Par<A>, choices: (A) -> Par<B>): Par<B> = { es: ExecutorService ->
         choices(pa(es).get()).invoke(es)
     }
 
     fun <A> choiceN(n: Par<Int>, choices: List<Par<A>>): Par<A> =
-        chooser(n) { idx -> choices[idx] }
+        flatMap(n) { idx -> choices[idx] }
 
     fun <A> choice(cond: Par<Boolean>, t: Par<A>, f: Par<A>): Par<A> =
         choiceN(map(cond) { if (it) 1 else 0 }, listOf(f, t))
@@ -148,7 +146,17 @@ object Pars {
     fun <K, V> choiceMap(
         key: Par<K>,
         choices: Map<K, Par<V>>
-    ): Par<V> = chooser(key) { k -> choices[k]!! }
+    ): Par<V> = flatMap(key) { k -> choices[k]!! }
+
+    /* 연습문제 7-13 */
+    fun <A> join(a: Par<Par<A>>): Par<A> =
+        { es: ExecutorService -> a(es).get()(es) }
+
+    fun <A, B> flatMapViaJoin(pa: Par<A>, f: (A) -> Par<B>): Par<B> =
+        join(map(pa, f))
+
+    fun <A> joinViaFlatMap(a: Par<Par<A>>): Par<A> =
+        flatMap(a) { it }
 
     fun sortPar(parList: Par<List<Int>>): Par<List<Int>> =
         map(parList) { it.sorted() }
