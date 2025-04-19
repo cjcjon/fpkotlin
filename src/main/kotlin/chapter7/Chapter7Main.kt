@@ -6,8 +6,11 @@ import org.example.common.splitAt
 
 class Par<A>(val get: A) {
     companion object {
-        fun <A> unit(a: () -> A): Par<A> = Par(a())
-        fun <A> get(a: Par<A>): A = a.get
+        fun <A> unit(a: A): Par<A> = Par(a)
+        fun <A> lazyUnit(a: () -> A): Par<A> =
+            fork { unit(a()) }
+        fun <A> run(a: Par<A>): A = TODO()
+        fun <A> fork(a: () -> Par<A>): Par<A> = TODO()
 
         fun <A, B, C> map2(px: Par<A>, py: Par<B>, f: (A, B) -> C): Par<C> =
             Par(f(px.get, py.get))
@@ -16,8 +19,13 @@ class Par<A>(val get: A) {
 
 fun sum(ints: List<Int>): Par<Int> =
     if (ints.size <= 1)
-        Par.unit { ints.firstOrNone().getOrElse { 0 } }
+        Par.unit(ints.firstOrNone().getOrElse { 0 })
     else {
         val (l, r) = ints.splitAt(ints.size / 2)
-        Par.map2(sum(l), sum(r)) { lx: Int, rx: Int -> lx + rx }
+        Par.map2(
+            Par.fork { sum(l) },
+            Par.fork { sum(r) }
+        ) { lx: Int, rx: Int ->
+            lx + rx
+        }
     }
