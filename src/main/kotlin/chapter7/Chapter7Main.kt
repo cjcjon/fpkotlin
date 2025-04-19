@@ -8,15 +8,16 @@ class Par<A>(val get: A) {
     companion object {
         fun <A> unit(a: () -> A): Par<A> = Par(a())
         fun <A> get(a: Par<A>): A = a.get
+
+        fun <A, B, C> map2(px: Par<A>, py: Par<B>, f: (A, B) -> C): Par<C> =
+            Par(f(px.get, py.get))
     }
 }
 
-fun sum(ints: List<Int>): Int =
+fun sum(ints: List<Int>): Par<Int> =
     if (ints.size <= 1)
-        ints.firstOrNone().getOrElse { 0 }
+        Par.unit { ints.firstOrNone().getOrElse { 0 } }
     else {
         val (l, r) = ints.splitAt(ints.size / 2)
-        val sumL: Par<Int> = Par.unit { sum(l) }
-        val sumR: Par<Int> = Par.unit { sum(r) }
-        sumL.get + sumR.get
+        Par.map2(sum(l), sum(r)) { lx: Int, rx: Int -> lx + rx }
     }
