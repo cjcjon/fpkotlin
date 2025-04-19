@@ -126,6 +126,14 @@ object Pars {
         choiceN(map(cond, { if (it) 1 else 0 }), listOf(f, t))(es)
     }
 
+    /* 연습문제 7-11 */
+    fun <K, V> choiceMap(
+        key: Par<K>,
+        choices: Map<K, Par<V>>
+    ): Par<V> = { es: ExecutorService ->
+        choices[key(es).get()]!!.invoke(es)
+    }
+
     fun sortPar(parList: Par<List<Int>>): Par<List<Int>> =
         map(parList) { it.sorted() }
 }
