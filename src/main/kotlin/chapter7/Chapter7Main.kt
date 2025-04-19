@@ -117,6 +117,15 @@ object Pars {
         }
     }
 
+    /* 연습문제 7-10 */
+    fun <A> choiceN(n: Par<Int>, choices: List<Par<A>>): Par<A> = { es: ExecutorService ->
+        choices[n(es).get()].invoke(es)
+    }
+
+    fun <A> choice(cond: Par<Boolean>, t: Par<A>, f: Par<A>): Par<A> = { es: ExecutorService ->
+        choiceN(map(cond, { if (it) 1 else 0 }), listOf(f, t))(es)
+    }
+
     fun sortPar(parList: Par<List<Int>>): Par<List<Int>> =
         map(parList) { it.sorted() }
 }
